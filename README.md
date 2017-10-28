@@ -1,17 +1,18 @@
 # reach-challenge
 
 A Amazon Web Service S3 bucket listing tool developed for Rea.ch Challenge.
-Make sure you have PHP and Composer installed on your system., then open the src directory on Terminal and type:
+
+Make sure you have PHP and Composer installed on your system, then open the src directory on Terminal and type:
+
 To install dependencies:
 ```sh
 $ composer install
 ```
-To run the application:
-Just type
+To run the application
 ```sh
 ./reach-challenge.php
 ```
-Or use some of the awesome options described below:
+Or use it with some of the awesome options described below:
 
 -h, --help &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prints this manual.
 
