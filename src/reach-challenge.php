@@ -3,6 +3,11 @@
 
 require_once 'vendor/autoload.php';
 
+/**
+  * A Amazon Web Service S3 bucket listing tool developed for Rea.ch Challenge.
+  *
+  * @author Lucas Teixeira Rocha <lucasrochabr@outlook.com>
+  */
 class ReachChallenge {
 	protected $version;
 	protected $options;
@@ -21,6 +26,7 @@ class ReachChallenge {
 	public function main() {
 		try {
 			global $argv;
+			echo "\n";
 			$this->setParams($argv);
 			$this->listBuckets();
 			$this->finish();
@@ -33,9 +39,9 @@ class ReachChallenge {
 
 	protected function setParams($arguments) {
 		array_shift($arguments); //removes filename
-		if (in_array('--help', $arguments)) {
+		if (in_array('-h', $arguments) || in_array('--help', $arguments)) {
 			$this->showManual();
-		} else if (in_array('--version', $arguments)) {
+		} else if (in_array('-v', $arguments) || in_array('--version', $arguments)) {
 			$this->showVersion();
 		}
 		foreach ($arguments as $arg) {
@@ -151,7 +157,14 @@ class ReachChallenge {
 	}
 
 	protected function showManual() {
-		echo 'TODO';
+		echo
+			"Just type ./reach-challenge.php to list your buckets or use some of the awesome options described below:\n"
+			."	-h, --help 				Prints this manual.\n"
+			."	-v, --version 				Shows the program`s version.\n"
+			."	--group-by-region			Group the results by AWS regions.\n"
+			."	--organize-by-storage			Organize the results by AWS Storage Classes.\n"
+			."	--size-format=[value]			Uses one of the supported size formats (bytes, KB, MB or GB). Ex: ./reach-challenge.php --size-format=\"GB\"\n"
+			."	--filter=[value]			Uses a regular expression to filter the accounted files by its names. Ex (consider only files wich names begins with \"UFO\"): ./reach-challenge.php --file=\"/^UFO/\"";
 		$this->finish();
 	}
 
@@ -161,7 +174,7 @@ class ReachChallenge {
 	}
 
 	protected function finish() {
-		die("\n");
+		die("\n\n");
 	}
 
 	protected function printSize($kbytes, $format = 'bytes') {
