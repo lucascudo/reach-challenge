@@ -1,5 +1,6 @@
 {
     "require": {
-        "aws/aws-sdk-php": "^3.36"
+        "aws/aws-sdk-php": "^3.36",
+        "pear/Console_Table": "^1.3"
     }
 }
