@@ -81,6 +81,10 @@ class ReachChallenge {
 				];
 			}
 			foreach ($objects['Contents'] as $file) {
+				if ($this->options['filter']) {
+					$found = preg_match($this->options['filter'], $file['Key']) ? TRUE : FALSE;
+					if (!$found) continue;
+				}
 				if ($this->options['organize-by-storage']) {
 					if (!isset($storages[$file['StorageClass']])) {
 						$storages[$file['StorageClass']] = [
