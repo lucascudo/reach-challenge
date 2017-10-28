@@ -13,6 +13,7 @@ class ReachChallenge {
 		$this->options = [
 			'filter' => NULL,
 			'group-by-region' => NULL,
+			'organize-by-storage' => NULL,
 			'size-format' => 'KB',
 		];
 	}
@@ -44,7 +45,7 @@ class ReachChallenge {
 			if (!array_key_exists($argName, $this->options)) {
 				throw new Exception("Unrecognized argument: '$argName'", 1);
 			}
-			if ($argName == 'group-by-region') {
+			if (in_array($argName, ['group-by-region', 'organize-by-storage'])) {
 				$argValue = TRUE;
 			}
 			$this->options[$argName] = $argValue;
@@ -64,6 +65,7 @@ class ReachChallenge {
 		$s3Client = (new \Aws\Sdk)->createMultiRegionS3([ 'version' => 'latest' ]);
 		$result = $s3Client->listBuckets();
 		foreach ($result['Buckets'] as $bucket) {
+			$storages = [];
 			$numberOfObjects = 0;
 			$bucketSize = 0;
 			$lastModified = new DateTime('1900-01-01');
@@ -79,11 +81,27 @@ class ReachChallenge {
 				];
 			}
 			foreach ($objects['Contents'] as $file) {
-				if ($file['LastModified'] > $lastModified) {
-					$lastModified = $file['LastModified'];
+				if ($this->options['organize-by-storage']) {
+					if (!isset($storages[$file['StorageClass']])) {
+						$storages[$file['StorageClass']] = [
+							'numberOfObjects' => 0,
+							'bucketSize' => 0,
+							'creationDate' => $bucket['CreationDate'],
+							'lastModified' => new DateTime('1900-01-01'),
+						];
+					}
+					if ($file['LastModified'] > $storages[$file['StorageClass']]['lastModified']) {
+						$storages[$file['StorageClass']]['lastModified'] = $file['LastModified'];
+					}
+					$storages[$file['StorageClass']]['numberOfObjects']++;
+					$storages[$file['StorageClass']]['bucketSize'] += $file['Size'];
+				} else {
+					if ($file['LastModified'] > $lastModified) {
+						$lastModified = $file['LastModified'];
+					}
+					$numberOfObjects++;
+					$bucketSize += $file['Size'];
 				}
-				$numberOfObjects++;
-				$bucketSize += $file['Size'];
 			}
 			if ($this->options['group-by-region']) {
 				if ($lastModified > $regionalData[$bucketRegion]['lastModified']) {
@@ -93,13 +111,25 @@ class ReachChallenge {
 				$regionalData[$bucketRegion]['bucketSize'] += $bucketSize;
 				$regionalData[$bucketRegion]['buckets'][] = $bucket['Name'];
 			} else {
-				$tbl->addRow([
-			    	$bucket['Name'],
-			    	$numberOfObjects,
-			    	$this->printSize($bucketSize, $this->options['size-format']),
-			    	$bucket['CreationDate']->format('r'),
-			    	$lastModified->format('r'),
-		    	]);
+				if ($this->options['organize-by-storage']) {
+					foreach ($storages as $storageClass => $data) {
+						$tbl->addRow([
+					    	$bucket['Name'] . " ($storageClass)",
+					    	$data['numberOfObjects'],
+					    	$this->printSize($data['bucketSize'], $this->options['size-format']),
+					    	$bucket['CreationDate']->format('r'),
+					    	$data['lastModified']->format('r'),
+				    	]);
+					}
+				} else {
+					$tbl->addRow([
+				    	$bucket['Name'],
+				    	$numberOfObjects,
+				    	$this->printSize($bucketSize, $this->options['size-format']),
+				    	$bucket['CreationDate']->format('r'),
+				    	$lastModified->format('r'),
+			    	]);
+				}
 			}
 		}
 		if ($this->options['group-by-region']) {
