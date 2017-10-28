@@ -2,6 +2,9 @@
 
 A Amazon Web Service S3 bucket listing tool developed for Rea.ch Challenge.
 
+
+Instructions:
+
 Make sure you have PHP and Composer installed on your system, then open the src directory on Terminal and type:
 
 To install dependencies:

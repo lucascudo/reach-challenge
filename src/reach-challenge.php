@@ -29,7 +29,6 @@ class ReachChallenge {
 			echo "\n";
 			$this->setParams($argv);
 			$this->listBuckets();
-			$this->finish();
 		} catch (Exception $e) {
 			echo $e->getMessage();
 		} finally {
@@ -74,7 +73,7 @@ class ReachChallenge {
 			$storages = [];
 			$numberOfObjects = 0;
 			$bucketSize = 0;
-			$lastModified = new DateTime('1900-01-01');
+			$lastModified = $bucket['CreationDate'];
 		    $objects = $s3Client->listObjects([ 'Bucket' => $bucket['Name'] ]);
 		    $bucketRegion = $objects['@metadata']['headers']['x-amz-bucket-region'];
 			if ($this->options['group-by-region'] && !isset($regionalData[$bucketRegion])) {
@@ -83,13 +82,12 @@ class ReachChallenge {
 					'numberOfObjects' => 0,
 					'bucketSize' => 0,
 					'creationDate' => $bucket['CreationDate'],
-					'lastModified' => new DateTime('1900-01-01'),
+					'lastModified' => $bucket['CreationDate'],
 				];
 			}
 			foreach ($objects['Contents'] as $file) {
-				if ($this->options['filter']) {
-					$found = preg_match($this->options['filter'], $file['Key']) ? TRUE : FALSE;
-					if (!$found) continue;
+				if ($this->options['filter'] && !preg_match($this->options['filter'], $file['Key'])) {
+					continue;
 				}
 				if ($this->options['organize-by-storage']) {
 					if (!isset($storages[$file['StorageClass']])) {
@@ -97,7 +95,7 @@ class ReachChallenge {
 							'numberOfObjects' => 0,
 							'bucketSize' => 0,
 							'creationDate' => $bucket['CreationDate'],
-							'lastModified' => new DateTime('1900-01-01'),
+							'lastModified' => $bucket['CreationDate'],
 						];
 					}
 					if ($file['LastModified'] > $storages[$file['StorageClass']]['lastModified']) {
@@ -126,7 +124,7 @@ class ReachChallenge {
 						$tbl->addRow([
 					    	$bucket['Name'] . " ($storageClass)",
 					    	$data['numberOfObjects'],
-					    	$this->printSize($data['bucketSize'], $this->options['size-format']),
+					    	$this->formatSize($data['bucketSize'], $this->options['size-format']),
 					    	$bucket['CreationDate']->format('r'),
 					    	$data['lastModified']->format('r'),
 				    	]);
@@ -135,7 +133,7 @@ class ReachChallenge {
 					$tbl->addRow([
 				    	$bucket['Name'],
 				    	$numberOfObjects,
-				    	$this->printSize($bucketSize, $this->options['size-format']),
+				    	$this->formatSize($bucketSize, $this->options['size-format']),
 				    	$bucket['CreationDate']->format('r'),
 				    	$lastModified->format('r'),
 			    	]);
@@ -147,7 +145,7 @@ class ReachChallenge {
 				$tbl->addRow([
 			    	$name . ' (' . implode(', ', $data['buckets']) . ')',
 			    	$data['numberOfObjects'],
-			    	$this->printSize($data['bucketSize'], $this->options['size-format']),
+			    	$this->formatSize($data['bucketSize'], $this->options['size-format']),
 			    	$data['creationDate']->format('r'),
 			    	$data['lastModified']->format('r'),
 		    	]);
@@ -169,7 +167,7 @@ class ReachChallenge {
 	}
 
 	protected function showVersion() {
-		echo "reach-challenge {$this->version}";
+		echo "reach-challenge $this->version";
 		$this->finish();
 	}
 
@@ -177,7 +175,7 @@ class ReachChallenge {
 		die("\n\n");
 	}
 
-	protected function printSize($kbytes, $format = 'bytes') {
+	protected function formatSize($kbytes, $format = 'bytes') {
 		$bytes = $kbytes * 1024;
 		switch (strtoupper($format))
 		{
