@@ -11,7 +11,7 @@ Just type
 ```sh
 ./reach-challenge.php
 ```
-to list your buckets or use some of the awesome options described below:
+Or use some of the awesome options described below:
 
 -h, --help &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prints this manual.
 
