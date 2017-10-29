@@ -13,7 +13,7 @@ try {
 		echo $bucketReader->listBuckets()->getTable();
 	}
 } catch (Exception $e) {
-	echo $e->getMessage();
+	throw $e;
 }
 die("\n\n");
 

@@ -7,15 +7,20 @@ Instructions:
 
 Make sure you have PHP and Composer installed on your system, then open the src directory on Terminal and type:
 
-To install dependencies:
+Installing dependencies:
 ```sh
 $ composer install
 ```
-To run the application
+Running application:
 ```sh
 ./reach-challenge.php
 ```
-Or use it with some of the awesome options described below:
+For unit testing, just open the tests directory and type:
+```sh
+../vendor/phpunit/phpunit/phpunit bucket-reader.class.test --colors
+```
+
+You can also use this tool with some of the awesome options described below:
 
 -h, --help &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prints this manual.
 
