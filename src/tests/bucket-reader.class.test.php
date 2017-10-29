@@ -6,7 +6,7 @@ require_once '../bucket-reader.class.php';
 use PHPUnit\Framework\TestCase;
 
 class BucketReaderTest extends TestCase {
-
+	
 	public function testSetParamsWithEmptyArgs() {
 		$bucketReader = new BucketReader();
 		$this->assertTrue($bucketReader->setParams([]));
@@ -29,7 +29,7 @@ class BucketReaderTest extends TestCase {
 	public function testSetParamsWithValidArgs() {
 		$bucketReader = new BucketReader();
 		$this->assertTrue($bucketReader->setParams([
-			'--filter="/validRegex/"',
+			'--filter=/validRegex/',
 			'--group-by-region',
 			'--organize-by-storage',
 			'--size-format=bytes',
@@ -41,6 +41,7 @@ class BucketReaderTest extends TestCase {
 		$bucketReader = new BucketReader();
 		try {
 			$bucketReader->setParams(['--invalid-argument']);
+			throw new Exception("Something did wrong", 1);
 		} catch (Exception $e) {
 			$this->assertTrue(is_int(strpos($e->getMessage(), 'Unrecognized argument')));
 		}
@@ -73,7 +74,7 @@ class BucketReaderTest extends TestCase {
 	public function testListBucketsWithValidRegex() {
 		ob_start();
 		$bucketReader = new BucketReader();
-		$bucketReader->setParams([ '--filter="/validRegex/"' ]);
+		$bucketReader->setParams([ '--filter=/validRegex/' ]);
 		$this->assertTrue($bucketReader->listBuckets() instanceof Console_Table);
 		ob_end_clean();
 	}
@@ -89,11 +90,15 @@ class BucketReaderTest extends TestCase {
 	public function testListBucketsWithInvalidRegex() {
 		ob_start();
 		$bucketReader = new BucketReader();
-		$bucketReader->setParams([ '--filter="invalidRegex"' ]);
+		$bucketReader->setParams([ '--filter=invalidRegex' ]);
 		try {
 			$bucketReader->listBuckets();
+			throw new Exception("Something did wrong", 1);
 		} catch (Exception $e) {
-			$this->assertTrue(is_int(strpos($e->getMessage(), 'Invalid regex filter')));
+			$this->assertTrue((
+				is_int(strpos($e->getMessage(), 'Invalid regex filter'))
+				|| is_int(strpos($e->getMessage(), 'preg_match()'))
+			));
 		}
 		ob_end_clean();
 	}
@@ -104,6 +109,7 @@ class BucketReaderTest extends TestCase {
 		$bucketReader->setParams([ '--size-format=InvalidSizeFormat' ]);
 		try {
 			$bucketReader->listBuckets();
+			throw new Exception("Something did wrong", 1);
 		} catch (Exception $e) {
 			$this->assertTrue(is_int(strpos($e->getMessage(), 'Unrecognized size format')));
 		}
