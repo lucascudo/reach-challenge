@@ -13,11 +13,11 @@ $ composer install
 ```
 Running the application:
 ```sh
-./reach-challenge.php
+$ ./reach-challenge.php
 ```
 For unit testing, just open the tests directory and type:
 ```sh
-../vendor/phpunit/phpunit/phpunit bucket-reader.class.test --colors
+$ ../vendor/phpunit/phpunit/phpunit bucket-reader.class.test --colors
 ```
 
 You can also use this tool with some of the awesome options described below:
