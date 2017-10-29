@@ -73,8 +73,11 @@ class BucketReader {
 				];
 			}
 			foreach ($objects['Contents'] as $file) {
-				if ($this->options['filter'] && !preg_match($this->options['filter'], $file['Key'])) {
-					continue;
+				if ($this->options['filter']) {
+					if (preg_match($this->options['filter'], $file['Key'], $matches) === FALSE) {
+						throw new Exception("Invalid regex filter: " . $this->options['filter'], 1);
+					}
+					if (empty($matches)) continue;
 				}
 				if ($this->options['organize-by-storage']) {
 					if (!isset($storages[$file['StorageClass']])) {

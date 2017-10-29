@@ -11,7 +11,7 @@ Installing dependencies:
 ```sh
 $ composer install
 ```
-Running application:
+Running the application:
 ```sh
 ./reach-challenge.php
 ```
