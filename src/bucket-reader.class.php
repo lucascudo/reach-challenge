@@ -8,6 +8,7 @@ require_once 'vendor/autoload.php';
   * @author Lucas Teixeira Rocha <lucasrochabr@outlook.com>
   */
 class BucketReader {
+
 	protected $version;
 	protected $options = [
 		'filter' => NULL,
