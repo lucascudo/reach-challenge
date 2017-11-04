@@ -1,26 +1,16 @@
-# reach-challenge
+# Introduction
 
 A simple Amazon Web Service S3 bucket listing tool developed for Rea.ch Challenge.
-
-
-Instructions:
-
-Make sure that you have PHP and Composer installed on your system, then open the src directory on Terminal and type:
-
-Installing dependencies:
+In ordert to use it, make sure that you have PHP and Composer installed on your system, then open the src directory on Terminal and type:
+# Setup:
 ```sh
 $ composer install
 ```
-Running the application:
+# Run:
 ```sh
 $ ./reach-challenge.php
 ```
-For unit testing, just open the tests directory and type:
-```sh
-$ ../vendor/phpunit/phpunit/phpunit bucket-reader.class.test --colors
-```
-
-You can also use this tool with some of the awesome options described below:
+You can also use it with some of the awesome options described below:
 
 -h, --help &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prints this manual.
 
@@ -33,3 +23,8 @@ You can also use this tool with some of the awesome options described below:
 --size-format=[value]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uses one of the supported size formats (bytes, KB, MB or GB). Ex: ./reach-challenge.php --size-format="GB"
 
 --filter=[value]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uses a regular expression to filter the accounted files by its names. Ex (consider only files wich names begins with "UFO"): ./reach-challenge.php --file="/^UFO/"
+# Unit tests:
+In the tests directory, type:
+```sh
+$ ../vendor/phpunit/phpunit/phpunit bucket-reader.class.test --colors --debug
+```
